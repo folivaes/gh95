@@ -1,6 +1,7 @@
 treceval8.1.exe -c -o qrels_GH05.txt saida-elasticsearch-stemmer.txt > resultado-elasticsearch-stemmer.txt
 
 - stemmer (https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-stemmer-tokenfilter.html)
+- stop (https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-stop-tokenfilter.html)
 DELETE /gh95/
 
 PUT /gh95/
@@ -14,11 +15,22 @@ PUT /gh95/
                 }
             },
             "filter" : {
+                "my_stop" : {
+                    "type" : "stop",
+                    "name" : "_english_"
+                },
                 "my_stemmer" : {
                     "type" : "stemmer",
-                    "name" : "_english_"
+                    "name" : "english"
                 }
             }
+        },
+        "index": {
+          "similarity": {
+            "my_similarity": {
+              "type": "BM25"
+            }
+          }
         }
     }
 }
