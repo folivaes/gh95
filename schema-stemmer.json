@@ -1,0 +1,26 @@
+treceval8.1.exe -c -o qrels_GH05.txt saida-elasticsearch-stemmer.txt > resultado-elasticsearch-stemmer.txt
+
+- stemmer (https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-stemmer-tokenfilter.html)
+DELETE /gh95/
+
+PUT /gh95/
+{
+    "settings": {
+        "analysis" : {
+            "analyzer" : {
+                "default" : {
+                    "tokenizer" : "standard",
+                    "filter" : ["standard", "lowercase", "my_stemmer"]
+                }
+            },
+            "filter" : {
+                "my_stemmer" : {
+                    "type" : "stemmer",
+                    "name" : "english"
+                }
+            }
+        }
+    }
+}
+
+GET /gh95/

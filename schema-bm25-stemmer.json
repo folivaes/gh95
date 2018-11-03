@@ -1,0 +1,51 @@
+treceval8.1.exe -c -o qrels_GH05.txt saida-elasticsearch-bm25-stemmer.txt > resultado-elasticsearch-bm25-stemmer.txt
+
+- mappings (https://www.elastic.co/guide/en/elasticsearch/reference/current/index-modules-similarity.html)
+- stemmer (https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-stemmer-tokenfilter.html)
+-------------------------------------------
+DELETE /gh95/
+-------------------------------------------
+PUT /gh95/
+{
+    "settings": {
+        "analysis" : {
+            "analyzer" : {
+                "default" : {
+                    "tokenizer" : "standard",
+                    "filter" : ["standard", "lowercase", "my_stemmer"]
+                }
+            },
+            "filter" : {
+                "my_stemmer" : {
+                    "type" : "stemmer",
+                    "name" : "english"
+                }
+            }
+        },
+        "index": {
+          "similarity": {
+            "my_similarity": {
+              "type": "DFR",
+              "basic_model": "g",
+              "after_effect": "l",
+              "normalization": "h2",
+              "normalization.h2.c": "3.0"
+            }
+          }
+        }
+    }
+}
+
+-------------------------------------------
+
+PUT /gh95/_mapping/_doc
+{
+  "properties" : {
+    "HEADLINE" : { "type" : "text", "similarity" : "my_similarity" },
+    "TEXT" : { "type" : "text", "similarity" : "my_similarity" }
+  }
+}
+
+------------------------------------------
+
+GET /gh95/
